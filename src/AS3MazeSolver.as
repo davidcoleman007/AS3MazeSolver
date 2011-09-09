@@ -14,6 +14,8 @@ package
 	import away3d.materials.*;
 	import away3d.primitives.*;
 	
+	import com.terabyte.as3mazesolver.view.Avatar;
+	import com.terabyte.as3mazesolver.view.Engine;
 	import com.terabyte.as3mazesolver.view.Maze;
 	
 	import flash.display.*;
@@ -30,7 +32,9 @@ package
 		private var Signature:Sprite;
 		private var SignatureBitmap:Bitmap;
 		
+		private var engine:Engine;
 		private var maze:Maze;
+		private var avatar:Avatar;
 		
 		private var collada:Collada;
 		
@@ -54,7 +58,7 @@ package
 		 */
 		private function init():void
 		{
-//			initEngine();
+			engine = Engine.getInstance();
 			initSignature();
 			initView();
 			initControllers();
@@ -66,31 +70,6 @@ package
 //		private var camera:HoverCamera3D;
 //		private var _view:View3D;
 		
-		/**
-		 * Initialise the engine
-		 */
-//		private function initEngine():void {
-//			scene = new Scene3D();
-			
-			//camera = new Camera3D({z:-1000});
-//			camera = new Camera3D();
-//			camera.panAngle = 90;
-//			camera.tiltAngle = 37.5;
-//			camera.distance = 100;
-//			camera.hover(true);
-			//			camera = new Camera3D();
-			//			camera.z = -1000;
-			
-//			_view = new View3D();
-//			_view.scene = scene;
-//			_view.camera = camera;
-//			camera.y = 100;
-//			camera.x = 0;
-			
-//			_view.addSourceURL("srcview/index.html");
-//			addChild(_view);
-//		}
-
 		private function initSignature():void
 		{
 			//add signature
@@ -104,33 +83,11 @@ package
 		
 		private function initView():void {
 			maze = new Maze();
-//			collada = new Collada();
-//			collada.material = Cast.material(Assets.DuckSkin);
-////			
-//			loader = new LoaderCube();
-//////			loader.loaderSize = 600;
-//			loader.addOnSuccess(onSuccess);
-//			loader.loadGeometry("assets/duck_triangulate.dae", collada);
-//			
+			avatar = Avatar.getInstance();
+			Engine.getInstance().scene.addChild(avatar.model3D);
+
 		}
 		
-		/**
-		 * Listener function for loading complete event on loader
-		 */
-		private function onSuccess(event:Event):void
-		{
-			duck = loader.handle as ObjectContainer3D;
-			duck.scale(2);
-//			duck.x = 0;
-//			duck.z = 0;
-//			duck.y = 0;
-			
-			duck.rotationX = 90;
-			
-//			scene.addChild(loader);
-//			camera.hover();
-		}
-	
 		private function initControllers():void {
 			
 		}
@@ -146,8 +103,8 @@ package
 		 */
 		private function onResize(event:Event = null):void
 		{
-			maze.view.x = stage.stageWidth / 2;
-			maze.view.y = stage.stageHeight / 2;
+			engine.view.x = stage.stageWidth / 2;
+			engine.view.y = stage.stageHeight / 2;
 			SignatureBitmap.y = stage.stageHeight - Signature.height;
 		}
 	}

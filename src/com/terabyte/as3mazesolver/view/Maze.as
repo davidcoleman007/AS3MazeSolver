@@ -20,9 +20,6 @@ package com.terabyte.as3mazesolver.view
 	public class Maze
 	{
 		//engine variables
-		private var scene:Scene3D;
-		private var camera:HoverCamera3D;
-		private var _view:View3D;
 		
 		//material objects
 		private var material:BitmapMaterial;
@@ -32,14 +29,10 @@ package com.terabyte.as3mazesolver.view
 
 		private var app:AS3MazeSolver = AS3MazeSolver.app
 		
-		public function Maze()
-		{
+		public function Maze() {
 			init();
 		}
 		
-		public function get view():View3D {
-			return _view;
-		}
 		/**
 		 * Initialize maze
 		 */
@@ -52,29 +45,10 @@ package com.terabyte.as3mazesolver.view
 		}
 		
 		public function addChild(obj:Object3D):void {
-			scene.addChild(obj);
+			Engine.getInstance().scene.addChild(obj);
 		}
 		
 		private function initEngine():void {
-			scene = new Scene3D();
-			
-			//camera = new Camera3D({z:-1000});
-			camera = new HoverCamera3D();
-			camera.panAngle = 45;
-			camera.tiltAngle = 60
-			camera.distance = 3000;
-			camera.hover(true);
-//			camera = new Camera3D();
-//			camera.z = -1000;
-			
-			_view = new View3D();
-			_view.scene = scene;
-			_view.camera = camera;
-			camera.y = 100;
-			camera.x = -500;
-			
-			_view.addSourceURL("srcview/index.html");
-			app.addChild(_view);
 		}
 		private var avatarMaterial:BitmapMaterial;
 		
@@ -85,8 +59,6 @@ package com.terabyte.as3mazesolver.view
 			material = new BitmapMaterial(Cast.bitmap(Assets.MazeMaterial));
 			avatarMaterial = new BitmapMaterial(Cast.bitmap(Assets.AvatarMaterial));
 		}
-		
-		public var avatar:Sphere;
 		
 		/**
 		 * Initialise the scene objects
@@ -100,20 +72,8 @@ package com.terabyte.as3mazesolver.view
 			floor.yUp = true;
 			floor.bothsides = true;
 			floor.y = 0;
-			scene.addChild(floor);
+			Engine.getInstance().scene.addChild(floor);
 			parseWalls();
-			addAvatar();
-		}
-		
-		private function addAvatar():void {
-			avatar = new Sphere();
-			avatar.radius = 20;
-			avatar.x = -425;
-			avatar.y = 25;
-			avatar.z = 500;
-			avatar.material = avatarMaterial;
-			avatar.rotationY = 90;
-			scene.addChild(avatar);
 		}
 		
 		private function parseWalls():void {
@@ -133,7 +93,7 @@ package com.terabyte.as3mazesolver.view
 		 */
 		private function onEnterFrame( e:Event ):void {
 			//			plane.rotationY += 2;
-			view.render();
+			Engine.getInstance().view.render();
 		}
 	}
 }
