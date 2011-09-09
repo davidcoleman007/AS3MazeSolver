@@ -42,7 +42,7 @@ package com.terabyte.as3mazesolver.view
 			_view = new View3D();
 			_view.scene = scene;
 			_view.camera = camera;
-			_camera.y = 100;
+			_camera.y = 300;
 			_camera.x = -500;
 			
 			_view.addSourceURL("srcview/index.html");

@@ -13,6 +13,7 @@ package com.terabyte.as3mazesolver.view
 	import away3d.primitives.Plane;
 	import away3d.primitives.Sphere;
 	
+	import flash.display.BitmapData;
 	import flash.events.Event;
 	
 	import mx.events.ResizeEvent;
@@ -26,6 +27,8 @@ package com.terabyte.as3mazesolver.view
 		
 		//scene objects
 		private var floor:Plane;
+		
+		private var mazeBitmap:BitmapData;
 
 		private var app:AS3MazeSolver = AS3MazeSolver.app
 		
@@ -36,8 +39,8 @@ package com.terabyte.as3mazesolver.view
 		/**
 		 * Initialize maze
 		 */
-		private function init():void
-		{
+		private function init():void {
+			mazeBitmap = Cast.bitmap(Assets.MazeMaterial);
 			initEngine();
 			initMaterials();
 			initObjects();
@@ -76,7 +79,19 @@ package com.terabyte.as3mazesolver.view
 			parseWalls();
 		}
 		
+		/**
+		 * assumptions: 
+		 *    1) the entrance is the same width as the cells of the maze
+		 *    2) the cells are square
+		 *    3) the maze is monochromatic
+		 *    4) the walls are non-white
+		 *    5) the floor is white
+		 * */
 		private function parseWalls():void {
+			findEntrances();
+		}
+		
+		private function findEntrances():void {
 			
 		}
 		
