@@ -1,3 +1,10 @@
+/**
+ * Written by David Kenneth Coleman
+ * Copyright 2011, TeraByte Data Systems Engineering Co.
+ * 
+ * All Rights Reserved
+ * 
+ * */
 package assets
 {
 	public class Assets

@@ -1,3 +1,10 @@
+/**
+ * Written by David Kenneth Coleman
+ * Copyright 2011, TeraByte Data Systems Engineering Co.
+ * 
+ * All Rights Reserved
+ * 
+ * */
 package com.terabyte.as3mazesolver.model {
 	import flash.events.EventDispatcher;
 	import flash.events.IEventDispatcher;

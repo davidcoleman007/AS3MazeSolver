@@ -1,3 +1,10 @@
+/**
+ * Written by David Kenneth Coleman
+ * Copyright 2011, TeraByte Data Systems Engineering Co.
+ * 
+ * All Rights Reserved
+ * 
+ * */
 package
 {
 	import assets.Assets;
@@ -23,6 +30,8 @@ package
 	
 	import flash.display.*;
 	import flash.events.*;
+	import flash.text.engine.TextBlock;
+	import flash.text.engine.TextElement;
 	
 	[SWF(backgroundColor="#000000", frameRate="24", quality="HIGH", width="800", height="600")]
 	public class AS3MazeSolver extends Sprite

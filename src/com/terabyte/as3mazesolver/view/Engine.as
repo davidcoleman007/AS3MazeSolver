@@ -1,3 +1,10 @@
+/**
+ * Written by David Kenneth Coleman
+ * Copyright 2011, TeraByte Data Systems Engineering Co.
+ * 
+ * All Rights Reserved
+ * 
+ * */
 package com.terabyte.as3mazesolver.view
 {
 	import away3d.cameras.Camera3D;
@@ -35,16 +42,10 @@ package com.terabyte.as3mazesolver.view
 			_scene = new Scene3D();
 			
 			_camera = new Camera3D();
-//			_camera.panAngle = 45;
-//			_camera.tiltAngle = 0
-//			_camera.distance = 2000;
-//			_camera.hover(true);
 			
 			_view = new View3D();
 			_view.scene = scene;
 			_view.camera = camera;
-//			_view.height = app.stage.height;
-//			_view.camera.lookAt(
 			_camera.y = 500;
 			_camera.x = 250;
 			_camera.z = 0;

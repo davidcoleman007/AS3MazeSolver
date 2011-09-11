@@ -1,3 +1,10 @@
+/**
+ * Written by David Kenneth Coleman
+ * Copyright 2011, TeraByte Data Systems Engineering Co.
+ * 
+ * All Rights Reserved
+ * 
+ * */
 package com.terabyte.as3mazesolver.controller {
 	import com.terabyte.as3mazesolver.events.AvatarEvent;
 	import com.terabyte.as3mazesolver.events.MazeEvent;
