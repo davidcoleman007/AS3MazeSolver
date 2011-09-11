@@ -1,0 +1,223 @@
+<!-- saved from url=(0014)about:internet -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<title>WireCube.as</title>
+<link rel="stylesheet" type="text/css" href="../../../SourceStyles.css"/>
+</head>
+
+<body><pre><span class="ActionScriptpackage">package</span> <span class="ActionScriptDefault_Text">away3d</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">primitives</span>
+<span class="ActionScriptBracket/Brace">{</span>
+    <span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">away3d</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">arcane</span>;
+    <span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">away3d</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">core</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">base</span><span class="ActionScriptOperator">.</span><span class="ActionScriptOperator">*</span>;
+    
+    <span class="ActionScriptReserved">use</span> <span class="ActionScriptReserved">namespace</span> <span class="ActionScriptDefault_Text">arcane</span>;
+    
+    <span class="ActionScriptASDoc">/**
+    * Creates a 3d wire cube primitive.
+    */</span> 
+    <span class="ActionScriptReserved">public</span> <span class="ActionScriptclass">class</span> <span class="ActionScriptDefault_Text">WireCube</span> <span class="ActionScriptReserved">extends</span> <span class="ActionScriptDefault_Text">AbstractPrimitive</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptReserved">private</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_width</span>:<span class="ActionScriptDefault_Text">Number</span>;
+        <span class="ActionScriptReserved">private</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_height</span>:<span class="ActionScriptDefault_Text">Number</span>;
+        <span class="ActionScriptReserved">private</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_depth</span>:<span class="ActionScriptDefault_Text">Number</span>;
+        <span class="ActionScriptReserved">private</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_v000</span>:<span class="ActionScriptDefault_Text">Vertex</span>;
+        <span class="ActionScriptReserved">private</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_v001</span>:<span class="ActionScriptDefault_Text">Vertex</span>;
+        <span class="ActionScriptReserved">private</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_v010</span>:<span class="ActionScriptDefault_Text">Vertex</span>;
+        <span class="ActionScriptReserved">private</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_v011</span>:<span class="ActionScriptDefault_Text">Vertex</span>;
+        <span class="ActionScriptReserved">private</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_v100</span>:<span class="ActionScriptDefault_Text">Vertex</span>;
+        <span class="ActionScriptReserved">private</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_v101</span>:<span class="ActionScriptDefault_Text">Vertex</span>;
+        <span class="ActionScriptReserved">private</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_v110</span>:<span class="ActionScriptDefault_Text">Vertex</span>;
+        <span class="ActionScriptReserved">private</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_v111</span>:<span class="ActionScriptDefault_Text">Vertex</span>;
+        
+        <span class="ActionScriptASDoc">/**
+         * @inheritDoc
+         */</span>
+        <span class="ActionScriptReserved">protected</span> <span class="ActionScriptReserved">override</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">buildPrimitive</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptReserved">void</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">super</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">buildPrimitive</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>;
+            
+            <span class="ActionScriptDefault_Text">_v000</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">createVertex</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptOperator">-</span><span class="ActionScriptDefault_Text">_width</span><span class="ActionScriptOperator">/</span>2<span class="ActionScriptOperator">,</span> <span class="ActionScriptOperator">-</span><span class="ActionScriptDefault_Text">_height</span><span class="ActionScriptOperator">/</span>2<span class="ActionScriptOperator">,</span> <span class="ActionScriptOperator">-</span><span class="ActionScriptDefault_Text">_depth</span><span class="ActionScriptOperator">/</span>2<span class="ActionScriptBracket/Brace">)</span>; 
+            <span class="ActionScriptDefault_Text">_v001</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">createVertex</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptOperator">-</span><span class="ActionScriptDefault_Text">_width</span><span class="ActionScriptOperator">/</span>2<span class="ActionScriptOperator">,</span> <span class="ActionScriptOperator">-</span><span class="ActionScriptDefault_Text">_height</span><span class="ActionScriptOperator">/</span>2<span class="ActionScriptOperator">,</span> <span class="ActionScriptOperator">+</span><span class="ActionScriptDefault_Text">_depth</span><span class="ActionScriptOperator">/</span>2<span class="ActionScriptBracket/Brace">)</span>; 
+            <span class="ActionScriptDefault_Text">_v010</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">createVertex</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptOperator">-</span><span class="ActionScriptDefault_Text">_width</span><span class="ActionScriptOperator">/</span>2<span class="ActionScriptOperator">,</span> <span class="ActionScriptOperator">+</span><span class="ActionScriptDefault_Text">_height</span><span class="ActionScriptOperator">/</span>2<span class="ActionScriptOperator">,</span> <span class="ActionScriptOperator">-</span><span class="ActionScriptDefault_Text">_depth</span><span class="ActionScriptOperator">/</span>2<span class="ActionScriptBracket/Brace">)</span>; 
+            <span class="ActionScriptDefault_Text">_v011</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">createVertex</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptOperator">-</span><span class="ActionScriptDefault_Text">_width</span><span class="ActionScriptOperator">/</span>2<span class="ActionScriptOperator">,</span> <span class="ActionScriptOperator">+</span><span class="ActionScriptDefault_Text">_height</span><span class="ActionScriptOperator">/</span>2<span class="ActionScriptOperator">,</span> <span class="ActionScriptOperator">+</span><span class="ActionScriptDefault_Text">_depth</span><span class="ActionScriptOperator">/</span>2<span class="ActionScriptBracket/Brace">)</span>; 
+            <span class="ActionScriptDefault_Text">_v100</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">createVertex</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptOperator">+</span><span class="ActionScriptDefault_Text">_width</span><span class="ActionScriptOperator">/</span>2<span class="ActionScriptOperator">,</span> <span class="ActionScriptOperator">-</span><span class="ActionScriptDefault_Text">_height</span><span class="ActionScriptOperator">/</span>2<span class="ActionScriptOperator">,</span> <span class="ActionScriptOperator">-</span><span class="ActionScriptDefault_Text">_depth</span><span class="ActionScriptOperator">/</span>2<span class="ActionScriptBracket/Brace">)</span>; 
+            <span class="ActionScriptDefault_Text">_v101</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">createVertex</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptOperator">+</span><span class="ActionScriptDefault_Text">_width</span><span class="ActionScriptOperator">/</span>2<span class="ActionScriptOperator">,</span> <span class="ActionScriptOperator">-</span><span class="ActionScriptDefault_Text">_height</span><span class="ActionScriptOperator">/</span>2<span class="ActionScriptOperator">,</span> <span class="ActionScriptOperator">+</span><span class="ActionScriptDefault_Text">_depth</span><span class="ActionScriptOperator">/</span>2<span class="ActionScriptBracket/Brace">)</span>; 
+            <span class="ActionScriptDefault_Text">_v110</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">createVertex</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptOperator">+</span><span class="ActionScriptDefault_Text">_width</span><span class="ActionScriptOperator">/</span>2<span class="ActionScriptOperator">,</span> <span class="ActionScriptOperator">+</span><span class="ActionScriptDefault_Text">_height</span><span class="ActionScriptOperator">/</span>2<span class="ActionScriptOperator">,</span> <span class="ActionScriptOperator">-</span><span class="ActionScriptDefault_Text">_depth</span><span class="ActionScriptOperator">/</span>2<span class="ActionScriptBracket/Brace">)</span>; 
+            <span class="ActionScriptDefault_Text">_v111</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">createVertex</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptOperator">+</span><span class="ActionScriptDefault_Text">_width</span><span class="ActionScriptOperator">/</span>2<span class="ActionScriptOperator">,</span> <span class="ActionScriptOperator">+</span><span class="ActionScriptDefault_Text">_height</span><span class="ActionScriptOperator">/</span>2<span class="ActionScriptOperator">,</span> <span class="ActionScriptOperator">+</span><span class="ActionScriptDefault_Text">_depth</span><span class="ActionScriptOperator">/</span>2<span class="ActionScriptBracket/Brace">)</span>; 
+
+            <span class="ActionScriptDefault_Text">addSegment</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">createSegment</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">v000</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">v001</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptDefault_Text">addSegment</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">createSegment</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">v011</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">v001</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptDefault_Text">addSegment</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">createSegment</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">v011</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">v010</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptDefault_Text">addSegment</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">createSegment</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">v000</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">v010</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptBracket/Brace">)</span>;
+
+            <span class="ActionScriptDefault_Text">addSegment</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">createSegment</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">v100</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">v000</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptDefault_Text">addSegment</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">createSegment</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">v101</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">v001</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptDefault_Text">addSegment</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">createSegment</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">v111</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">v011</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptDefault_Text">addSegment</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">createSegment</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">v110</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">v010</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptBracket/Brace">)</span>;
+
+            <span class="ActionScriptDefault_Text">addSegment</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">createSegment</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">v100</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">v101</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptDefault_Text">addSegment</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">createSegment</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">v111</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">v101</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptDefault_Text">addSegment</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">createSegment</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">v111</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">v110</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptDefault_Text">addSegment</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">createSegment</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">v100</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">v110</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptBracket/Brace">)</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptASDoc">/**
+         * Returns the back bottom left vertex of the cube.
+         */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">get</span> <span class="ActionScriptDefault_Text">v000</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">Vertex</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">_primitiveDirty</span><span class="ActionScriptBracket/Brace">)</span>
+                <span class="ActionScriptDefault_Text">updatePrimitive</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>;
+            
+            <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">_v000</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptASDoc">/**
+         * Returns the front bottom left vertex of the cube.
+         */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">get</span> <span class="ActionScriptDefault_Text">v001</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">Vertex</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">_primitiveDirty</span><span class="ActionScriptBracket/Brace">)</span>
+                <span class="ActionScriptDefault_Text">updatePrimitive</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>;
+            
+            <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">_v001</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptASDoc">/**
+         * Returns the back top left vertex of the cube.
+         */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">get</span> <span class="ActionScriptDefault_Text">v010</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">Vertex</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">_primitiveDirty</span><span class="ActionScriptBracket/Brace">)</span>
+                <span class="ActionScriptDefault_Text">updatePrimitive</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>;
+            
+            <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">_v010</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptASDoc">/**
+         * Returns the front top left vertex of the cube.
+         */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">get</span> <span class="ActionScriptDefault_Text">v011</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">Vertex</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">_primitiveDirty</span><span class="ActionScriptBracket/Brace">)</span>
+                <span class="ActionScriptDefault_Text">updatePrimitive</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>;
+            
+            <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">_v011</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptASDoc">/**
+         * Returns the back bottom right vertex of the cube.
+         */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">get</span> <span class="ActionScriptDefault_Text">v100</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">Vertex</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">_primitiveDirty</span><span class="ActionScriptBracket/Brace">)</span>
+                <span class="ActionScriptDefault_Text">updatePrimitive</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>;
+            
+            <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">_v100</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptASDoc">/**
+         * Returns the front bottom right vertex of the cube.
+         */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">get</span> <span class="ActionScriptDefault_Text">v101</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">Vertex</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">_primitiveDirty</span><span class="ActionScriptBracket/Brace">)</span>
+                <span class="ActionScriptDefault_Text">updatePrimitive</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>;
+            
+            <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">_v101</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptASDoc">/**
+         * Returns the back top right vertex of the cube.
+         */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">get</span> <span class="ActionScriptDefault_Text">v110</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">Vertex</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">_primitiveDirty</span><span class="ActionScriptBracket/Brace">)</span>
+                <span class="ActionScriptDefault_Text">updatePrimitive</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>;
+            
+            <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">_v110</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptASDoc">/**
+         * Returns the front top right vertex of the cube.
+         */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">get</span> <span class="ActionScriptDefault_Text">v111</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">Vertex</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">_primitiveDirty</span><span class="ActionScriptBracket/Brace">)</span>
+                <span class="ActionScriptDefault_Text">updatePrimitive</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>;
+            
+            <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">_v111</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptASDoc">/**
+         * Defines the width of the cube. Defaults to 100.
+         */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">get</span> <span class="ActionScriptDefault_Text">width</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">Number</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">_width</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">set</span> <span class="ActionScriptDefault_Text">width</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">val</span>:<span class="ActionScriptDefault_Text">Number</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptReserved">void</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">_width</span> <span class="ActionScriptOperator">==</span> <span class="ActionScriptDefault_Text">val</span><span class="ActionScriptBracket/Brace">)</span>
+                <span class="ActionScriptReserved">return</span>;
+            
+            <span class="ActionScriptDefault_Text">_width</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">val</span>;
+            <span class="ActionScriptDefault_Text">_primitiveDirty</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">true</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptASDoc">/**
+         * Defines the height of the cube. Defaults to 100.
+         */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">get</span> <span class="ActionScriptDefault_Text">height</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">Number</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">_height</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">set</span> <span class="ActionScriptDefault_Text">height</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">val</span>:<span class="ActionScriptDefault_Text">Number</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptReserved">void</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">_height</span> <span class="ActionScriptOperator">==</span> <span class="ActionScriptDefault_Text">val</span><span class="ActionScriptBracket/Brace">)</span>
+                <span class="ActionScriptReserved">return</span>;
+            
+            <span class="ActionScriptDefault_Text">_height</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">val</span>;
+            <span class="ActionScriptDefault_Text">_primitiveDirty</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">true</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptASDoc">/**
+         * Defines the depth of the cube. Defaults to 100.
+         */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">get</span> <span class="ActionScriptDefault_Text">depth</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">Number</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">_depth</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">set</span> <span class="ActionScriptDefault_Text">depth</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">val</span>:<span class="ActionScriptDefault_Text">Number</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptReserved">void</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">_depth</span> <span class="ActionScriptOperator">==</span> <span class="ActionScriptDefault_Text">val</span><span class="ActionScriptBracket/Brace">)</span>
+                <span class="ActionScriptReserved">return</span>;
+            
+            <span class="ActionScriptDefault_Text">_depth</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">val</span>;
+            <span class="ActionScriptDefault_Text">_primitiveDirty</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">true</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptASDoc">/**
+         * Creates a new &lt;code&gt;WireCube&lt;/code&gt; object.
+         *
+         * @param    init            [optional]    An initialisation object for specifying default instance properties.
+         */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">WireCube</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">init</span>:<span class="ActionScriptDefault_Text">Object</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">null</span><span class="ActionScriptBracket/Brace">)</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">super</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">init</span><span class="ActionScriptBracket/Brace">)</span>;
+
+            <span class="ActionScriptDefault_Text">_width</span>  <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">ini</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">getNumber</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptString">"width"</span><span class="ActionScriptOperator">,</span> 100<span class="ActionScriptOperator">,</span> <span class="ActionScriptBracket/Brace">{</span><span class="ActionScriptDefault_Text">min</span>:0<span class="ActionScriptBracket/Brace">}</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptDefault_Text">_height</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">ini</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">getNumber</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptString">"height"</span><span class="ActionScriptOperator">,</span> 100<span class="ActionScriptOperator">,</span> <span class="ActionScriptBracket/Brace">{</span><span class="ActionScriptDefault_Text">min</span>:0<span class="ActionScriptBracket/Brace">}</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptDefault_Text">_depth</span>  <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">ini</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">getNumber</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptString">"depth"</span><span class="ActionScriptOperator">,</span> 100<span class="ActionScriptOperator">,</span> <span class="ActionScriptBracket/Brace">{</span><span class="ActionScriptDefault_Text">min</span>:0<span class="ActionScriptBracket/Brace">}</span><span class="ActionScriptBracket/Brace">)</span>;
+            
+            <span class="ActionScriptDefault_Text">type</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptString">"WireCube"</span>;
+            <span class="ActionScriptDefault_Text">url</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptString">"primitive"</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+    <span class="ActionScriptBracket/Brace">}</span>
+<span class="ActionScriptBracket/Brace">}</span></pre></body>
+</html>

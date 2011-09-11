@@ -14,6 +14,9 @@ package
 	import away3d.materials.*;
 	import away3d.primitives.*;
 	
+	import com.terabyte.as3mazesolver.controller.MazeController;
+	import com.terabyte.as3mazesolver.model.Cell;
+	import com.terabyte.as3mazesolver.model.Model;
 	import com.terabyte.as3mazesolver.view.Avatar;
 	import com.terabyte.as3mazesolver.view.Engine;
 	import com.terabyte.as3mazesolver.view.Maze;
@@ -21,7 +24,7 @@ package
 	import flash.display.*;
 	import flash.events.*;
 	
-	[SWF(backgroundColor="#000000", frameRate="30", quality="LOW", width="800", height="600")]
+	[SWF(backgroundColor="#000000", frameRate="24", quality="HIGH", width="800", height="600")]
 	public class AS3MazeSolver extends Sprite
 	{
 		//signature swf
@@ -42,15 +45,25 @@ package
 		
 		private var duck:ObjectContainer3D;
 		
+		public var model:Model;
+		
 		public static var app:AS3MazeSolver;
 		
 		/**
 		 * Constructor
 		 */
-		public function AS3MazeSolver() 
-		{	
+		public function AS3MazeSolver() {	
 			app = this;
+			model = Model.getInstance();
 			init();
+			Avatar.getInstance().jumpTo(
+				Maze.getInstance().entrances[0] as Cell
+			);
+//			MazeController.getInstance().addEventListener(
+//				MazeEvent.MAZE_SOLVED,
+//				onMazeSolved
+//			);
+			MazeController.getInstance().solveMaze();
 		}
 		
 		/**
@@ -65,11 +78,6 @@ package
 			initListeners();
 		}
 		
-		//engine variables
-//		private var scene:Scene3D;
-//		private var camera:HoverCamera3D;
-//		private var _view:View3D;
-		
 		private function initSignature():void
 		{
 			//add signature
@@ -82,10 +90,9 @@ package
 		}
 		
 		private function initView():void {
-			maze = new Maze();
+			maze = Maze.getInstance();
 			avatar = Avatar.getInstance();
 			Engine.getInstance().scene.addChild(avatar.model3D);
-
 		}
 		
 		private function initControllers():void {

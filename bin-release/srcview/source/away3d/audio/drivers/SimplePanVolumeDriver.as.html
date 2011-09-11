@@ -1,0 +1,121 @@
+<!-- saved from url=(0014)about:internet -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<title>SimplePanVolumeDriver.as</title>
+<link rel="stylesheet" type="text/css" href="../../../../SourceStyles.css"/>
+</head>
+
+<body><pre><span class="ActionScriptpackage">package</span> <span class="ActionScriptDefault_Text">away3d</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">audio</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">drivers</span>
+<span class="ActionScriptBracket/Brace">{</span>
+    <span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">flash</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">media</span><span class="ActionScriptOperator">.</span><span class="ActionScriptOperator">*</span>;
+    <span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">flash</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">geom</span><span class="ActionScriptOperator">.</span><span class="ActionScriptOperator">*</span>;
+    
+    
+    <span class="ActionScriptASDoc">/**
+     * The Simple pan/volume Sound3D driver will alter the pan and volume properties on the
+     * sound transform object of a regular flash.media.Sound3D representation of the sound. This
+     * is very efficient, but has the drawback that it can only reflect azimuth and distance,
+     * and will disregard elevation. You'll be able to hear whether a   
+    */</span>
+    <span class="ActionScriptReserved">public</span> <span class="ActionScriptclass">class</span> <span class="ActionScriptDefault_Text">SimplePanVolumeDriver</span> <span class="ActionScriptReserved">extends</span> <span class="ActionScriptDefault_Text">AbstractSound3DDriver</span> <span class="ActionScriptReserved">implements</span> <span class="ActionScriptDefault_Text">ISound3DDriver</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptReserved">private</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_sound_chan</span>:<span class="ActionScriptDefault_Text">SoundChannel</span>;
+        <span class="ActionScriptReserved">private</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_sound_tf</span>:<span class="ActionScriptDefault_Text">SoundTransform</span>;
+        
+        <span class="ActionScriptReserved">private</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_pause_position</span> : <span class="ActionScriptDefault_Text">Number</span>;
+        
+        
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">SimplePanVolumeDriver</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">super</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>;
+            
+            <span class="ActionScriptDefault_Text">_sound_tf</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">SoundTransform</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">play</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span> : <span class="ActionScriptReserved">void</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">pos</span> : <span class="ActionScriptDefault_Text">Number</span>;
+            
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptOperator">!</span><span class="ActionScriptDefault_Text">_src</span><span class="ActionScriptBracket/Brace">)</span>
+                <span class="ActionScriptReserved">throw</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">Error</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptString">'SimplePanVolumeDriver.play(): No sound source to play.'</span><span class="ActionScriptBracket/Brace">)</span>;
+                
+            <span class="ActionScriptDefault_Text">_playing</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">true</span>;
+            
+            <span class="ActionScriptComment">// Update sound transform first. This has not happened while
+</span>            <span class="ActionScriptComment">// the sound was not playing, so needs to be done now.
+</span>            <span class="ActionScriptDefault_Text">_updateSoundTransform</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>;
+            
+            <span class="ActionScriptComment">// Start playing. If paused, resume from pause position. Else,
+</span>            <span class="ActionScriptComment">// start from beginning of file.
+</span>            <span class="ActionScriptDefault_Text">pos</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">_paused</span><span class="ActionScriptOperator">?</span> <span class="ActionScriptDefault_Text">_pause_position</span> : 0;
+            <span class="ActionScriptDefault_Text">_sound_chan</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">_src</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">play</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">pos</span><span class="ActionScriptOperator">,</span> 0<span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">_sound_tf</span><span class="ActionScriptBracket/Brace">)</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">pause</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span> : <span class="ActionScriptReserved">void</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptDefault_Text">_paused</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">true</span>;
+            <span class="ActionScriptDefault_Text">_pause_position</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">_sound_chan</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">position</span>;
+            <span class="ActionScriptDefault_Text">_sound_chan</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">stop</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">stop</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span> : <span class="ActionScriptReserved">void</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptDefault_Text">_sound_chan</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">stop</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        
+        
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptReserved">override</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">updateReferenceVector</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">v</span>:<span class="ActionScriptDefault_Text">Vector3D</span><span class="ActionScriptBracket/Brace">)</span> : <span class="ActionScriptReserved">void</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">super</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">updateReferenceVector</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">v</span><span class="ActionScriptBracket/Brace">)</span>;
+            
+            <span class="ActionScriptComment">// Only update sound transform while playing
+</span>            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">_playing</span><span class="ActionScriptBracket/Brace">)</span>
+                <span class="ActionScriptDefault_Text">_updateSoundTransform</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        
+        
+        <span class="ActionScriptReserved">private</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">_updateSoundTransform</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span> : <span class="ActionScriptReserved">void</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">r</span> : <span class="ActionScriptDefault_Text">Number</span>;
+            <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">r2</span> : <span class="ActionScriptDefault_Text">Number</span>;
+            <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">azimuth</span>:<span class="ActionScriptDefault_Text">Number</span>;
+            
+            <span class="ActionScriptDefault_Text">azimuth</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">Math</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">atan2</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">_ref_v</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">x</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">_ref_v</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">z</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">azimuth</span> <span class="ActionScriptOperator">&lt;</span> <span class="ActionScriptOperator">-</span>1.5707963<span class="ActionScriptBracket/Brace">)</span>
+                <span class="ActionScriptDefault_Text">azimuth</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptOperator">-</span><span class="ActionScriptBracket/Brace">(</span>1.5707963 <span class="ActionScriptOperator">+</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">azimuth</span> <span class="ActionScriptOperator">%</span> 1.5707963<span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptReserved">else</span> <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">azimuth</span> <span class="ActionScriptOperator">&gt;</span> 1.5707963<span class="ActionScriptBracket/Brace">)</span>
+                <span class="ActionScriptDefault_Text">azimuth</span> <span class="ActionScriptOperator">=</span> 1.5707963 <span class="ActionScriptOperator">-</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">azimuth</span> <span class="ActionScriptOperator">%</span> 1.5707963<span class="ActionScriptBracket/Brace">)</span>;
+            
+            <span class="ActionScriptComment">// Divide by a number larger than pi/2, to make sure
+</span>            <span class="ActionScriptComment">// that pan is never full +/-1.0, muting one channel
+</span>            <span class="ActionScriptComment">// completely, which feels very unnatural. 
+</span>            <span class="ActionScriptDefault_Text">_sound_tf</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">pan</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">azimuth</span><span class="ActionScriptOperator">/</span>1.7<span class="ActionScriptBracket/Brace">)</span>;
+            
+            <span class="ActionScriptComment">// Offset radius so that max value for volume curve is 1,
+</span>            <span class="ActionScriptComment">// (i.e. y~=1 for r=0.) Also scale according to configured
+</span>            <span class="ActionScriptComment">// driver scale value.
+</span>            <span class="ActionScriptDefault_Text">r</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">_ref_v</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">length</span> <span class="ActionScriptOperator">/</span> <span class="ActionScriptDefault_Text">_scale</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptOperator">+</span> 0.28209479;
+            <span class="ActionScriptDefault_Text">r2</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">r</span><span class="ActionScriptOperator">*</span><span class="ActionScriptDefault_Text">r</span>;
+            
+            <span class="ActionScriptComment">// Volume is calculated according to the formula for
+</span>            <span class="ActionScriptComment">// sound intensity, I = P / (4 * pi * r^2)
+</span>            <span class="ActionScriptComment">// Avoid division by zero.
+</span>            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">r2</span><span class="ActionScriptOperator">&gt;</span>0<span class="ActionScriptBracket/Brace">)</span>     <span class="ActionScriptDefault_Text">_sound_tf</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">volume</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptBracket/Brace">(</span>1 <span class="ActionScriptOperator">/</span> <span class="ActionScriptBracket/Brace">(</span>12.566 <span class="ActionScriptOperator">*</span> <span class="ActionScriptDefault_Text">r2</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptBracket/Brace">)</span>;        <span class="ActionScriptComment">// 1 / 4pi * r^2
+</span>            <span class="ActionScriptReserved">else</span>          <span class="ActionScriptDefault_Text">_sound_tf</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">volume</span> <span class="ActionScriptOperator">=</span> 1;
+            
+            <span class="ActionScriptComment">// Alter according to user-specified volume
+</span>            <span class="ActionScriptDefault_Text">_sound_tf</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">volume</span> <span class="ActionScriptOperator">*=</span> <span class="ActionScriptDefault_Text">_mute</span><span class="ActionScriptOperator">?</span> 0 : <span class="ActionScriptDefault_Text">_volume</span>;
+            
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">_sound_chan</span><span class="ActionScriptBracket/Brace">)</span>
+                <span class="ActionScriptDefault_Text">_sound_chan</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">soundTransform</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">_sound_tf</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+    <span class="ActionScriptBracket/Brace">}</span>
+<span class="ActionScriptBracket/Brace">}</span></pre></body>
+</html>

@@ -1,0 +1,294 @@
+<!-- saved from url=(0014)about:internet -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<title>HitManager.as</title>
+<link rel="stylesheet" type="text/css" href="../../../../SourceStyles.css"/>
+</head>
+
+<body><pre><span class="ActionScriptpackage">package</span> <span class="ActionScriptDefault_Text">away3d</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">core</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">utils</span> 
+<span class="ActionScriptBracket/Brace">{</span>
+    <span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">away3d</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">arcane</span>;
+    <span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">away3d</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">containers</span><span class="ActionScriptOperator">.</span><span class="ActionScriptOperator">*</span>;
+    <span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">away3d</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">core</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">base</span><span class="ActionScriptOperator">.</span><span class="ActionScriptOperator">*</span>;
+    <span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">away3d</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">core</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">project</span><span class="ActionScriptOperator">.</span><span class="ActionScriptOperator">*</span>;
+    <span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">away3d</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">core</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">render</span><span class="ActionScriptOperator">.</span><span class="ActionScriptOperator">*</span>;
+    <span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">away3d</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">core</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">session</span><span class="ActionScriptOperator">.</span><span class="ActionScriptOperator">*</span>;
+    <span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">away3d</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">core</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">vos</span><span class="ActionScriptOperator">.</span><span class="ActionScriptOperator">*</span>;
+    <span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">away3d</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">events</span><span class="ActionScriptOperator">.</span><span class="ActionScriptOperator">*</span>;
+    <span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">away3d</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">materials</span><span class="ActionScriptOperator">.</span><span class="ActionScriptOperator">*</span>;
+    
+    <span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">flash</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">display</span><span class="ActionScriptOperator">.</span><span class="ActionScriptOperator">*</span>;
+    <span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">flash</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">geom</span><span class="ActionScriptOperator">.</span><span class="ActionScriptOperator">*</span>;
+    
+    <span class="ActionScriptReserved">use</span> <span class="ActionScriptReserved">namespace</span> <span class="ActionScriptDefault_Text">arcane</span>;
+    
+    <span class="ActionScriptASDoc">/**
+     * @author robbateman
+     */</span>
+    <span class="ActionScriptReserved">public</span> <span class="ActionScriptclass">class</span> <span class="ActionScriptDefault_Text">HitManager</span> 
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptReserved">private</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_screenX</span>:<span class="ActionScriptDefault_Text">Number</span>;
+        <span class="ActionScriptReserved">private</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_screenY</span>:<span class="ActionScriptDefault_Text">Number</span>;
+        <span class="ActionScriptReserved">private</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_screenZ</span>:<span class="ActionScriptDefault_Text">Number</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">Infinity</span>;
+        <span class="ActionScriptReserved">private</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_sceneX</span>:<span class="ActionScriptDefault_Text">Number</span>;
+        <span class="ActionScriptReserved">private</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_sceneY</span>:<span class="ActionScriptDefault_Text">Number</span>;
+        <span class="ActionScriptReserved">private</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_sceneZ</span>:<span class="ActionScriptDefault_Text">Number</span>;
+        <span class="ActionScriptReserved">private</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_view</span>:<span class="ActionScriptDefault_Text">View3D</span>;
+        <span class="ActionScriptReserved">private</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_material</span>:<span class="ActionScriptDefault_Text">Material</span>;
+        <span class="ActionScriptReserved">private</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_elementVO</span>:<span class="ActionScriptDefault_Text">ElementVO</span>;
+        <span class="ActionScriptReserved">private</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_object</span>:<span class="ActionScriptDefault_Text">Object3D</span>;
+        <span class="ActionScriptReserved">private</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_uv</span>:<span class="ActionScriptDefault_Text">UV</span>;
+        
+        <span class="ActionScriptReserved">private</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_inv</span>:<span class="ActionScriptDefault_Text">Matrix3D</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">Matrix3D</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>;
+        <span class="ActionScriptReserved">private</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_persp</span>:<span class="ActionScriptDefault_Text">Number</span>;
+        <span class="ActionScriptReserved">private</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_renderer</span>:<span class="ActionScriptDefault_Text">Renderer</span>;
+        <span class="ActionScriptReserved">private</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_hitSourceObject</span>:<span class="ActionScriptDefault_Text">ViewSourceObject</span>;
+        <span class="ActionScriptReserved">private</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_source</span>:<span class="ActionScriptDefault_Text">Object3D</span>;
+        <span class="ActionScriptReserved">private</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_primitiveType</span>:<span class="ActionScriptDefault_Text">uint</span>;
+        <span class="ActionScriptReserved">private</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_primitiveElement</span>:<span class="ActionScriptDefault_Text">ElementVO</span>;
+        <span class="ActionScriptReserved">private</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_container</span>:<span class="ActionScriptDefault_Text">DisplayObject</span>;
+        <span class="ActionScriptReserved">private</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_hitPointX</span>:<span class="ActionScriptDefault_Text">Number</span>;
+        <span class="ActionScriptReserved">private</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_hitPointY</span>:<span class="ActionScriptDefault_Text">Number</span>;
+        
+        <span class="ActionScriptReserved">private</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_focus</span>:<span class="ActionScriptDefault_Text">Number</span>;
+        
+        
+        <span class="ActionScriptReserved">private</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">checkSession</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">session</span>:<span class="ActionScriptDefault_Text">AbstractSession</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptReserved">void</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">session</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">getContainer</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">_view</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">hitTestPoint</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">_hitPointX</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">_hitPointY</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptBracket/Brace">{</span>
+                <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">session</span> <span class="ActionScriptReserved">is</span> <span class="ActionScriptDefault_Text">BitmapSession</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptBracket/Brace">{</span>
+                    <span class="ActionScriptDefault_Text">_container</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">session</span> <span class="ActionScriptReserved">as</span> <span class="ActionScriptDefault_Text">BitmapSession</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">getBitmapContainer</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">_view</span><span class="ActionScriptBracket/Brace">)</span>;
+                    <span class="ActionScriptDefault_Text">_hitPointX</span> <span class="ActionScriptOperator">+=</span> <span class="ActionScriptDefault_Text">_container</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">x</span>;
+                    <span class="ActionScriptDefault_Text">_hitPointY</span> <span class="ActionScriptOperator">+=</span> <span class="ActionScriptDefault_Text">_container</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">y</span>;
+                <span class="ActionScriptBracket/Brace">}</span>
+                
+                <span class="ActionScriptDefault_Text">_renderer</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">session</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">getRenderer</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">view</span><span class="ActionScriptBracket/Brace">)</span>;
+                
+                <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">lists</span>:<span class="ActionScriptDefault_Text">Vector</span><span class="ActionScriptBracket/Brace">.&lt;</span><span class="ActionScriptDefault_Text">uint</span><span class="ActionScriptBracket/Brace">&gt;</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">session</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">getRenderer</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">_view</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">list</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>;
+                <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">priIndex</span>:<span class="ActionScriptDefault_Text">uint</span>;
+                <span class="ActionScriptReserved">for each</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">priIndex</span> <span class="ActionScriptReserved">in</span> <span class="ActionScriptDefault_Text">lists</span><span class="ActionScriptBracket/Brace">)</span>
+                   <span class="ActionScriptDefault_Text">checkPrimitive</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">priIndex</span><span class="ActionScriptBracket/Brace">)</span>;
+                <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_sessions</span>:<span class="ActionScriptDefault_Text">Array</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">session</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">sessions</span>;
+                <span class="ActionScriptReserved">for each</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">session</span> <span class="ActionScriptReserved">in</span> <span class="ActionScriptDefault_Text">_sessions</span><span class="ActionScriptBracket/Brace">)</span>
+                    <span class="ActionScriptDefault_Text">checkSession</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">session</span><span class="ActionScriptBracket/Brace">)</span>;
+                
+                <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">session</span> <span class="ActionScriptReserved">is</span> <span class="ActionScriptDefault_Text">BitmapSession</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptBracket/Brace">{</span>
+                    <span class="ActionScriptDefault_Text">_container</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">session</span> <span class="ActionScriptReserved">as</span> <span class="ActionScriptDefault_Text">BitmapSession</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">getBitmapContainer</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">_view</span><span class="ActionScriptBracket/Brace">)</span>;
+                    <span class="ActionScriptDefault_Text">_hitPointX</span> <span class="ActionScriptOperator">-=</span> <span class="ActionScriptDefault_Text">_container</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">x</span>;
+                    <span class="ActionScriptDefault_Text">_hitPointY</span> <span class="ActionScriptOperator">-=</span> <span class="ActionScriptDefault_Text">_container</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">y</span>;
+                <span class="ActionScriptBracket/Brace">}</span>
+            <span class="ActionScriptBracket/Brace">}</span>
+            
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptReserved">private</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">checkPrimitive</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">priIndex</span>:<span class="ActionScriptDefault_Text">uint</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptReserved">void</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptDefault_Text">_primitiveType</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">_renderer</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">primitiveType</span><span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptDefault_Text">priIndex</span><span class="ActionScriptBracket/Brace">]</span>;
+            
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">_primitiveType</span> <span class="ActionScriptOperator">==</span> <span class="ActionScriptDefault_Text">PrimitiveType</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">FOG</span> <span class="ActionScriptOperator">||</span> <span class="ActionScriptDefault_Text">_primitiveType</span> <span class="ActionScriptOperator">==</span> <span class="ActionScriptDefault_Text">PrimitiveType</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">DISPLAY_OBJECT</span><span class="ActionScriptBracket/Brace">)</span>
+                <span class="ActionScriptReserved">return</span>;
+            
+            <span class="ActionScriptDefault_Text">_hitSourceObject</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">_renderer</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">primitiveSource</span><span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptDefault_Text">priIndex</span><span class="ActionScriptBracket/Brace">]</span>;
+            <span class="ActionScriptDefault_Text">_source</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">_hitSourceObject</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">source</span>;
+            
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptOperator">!</span><span class="ActionScriptDefault_Text">_source</span> <span class="ActionScriptOperator">||</span> <span class="ActionScriptOperator">!</span><span class="ActionScriptDefault_Text">_source</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">_mouseEnabled</span><span class="ActionScriptBracket/Brace">)</span>
+                <span class="ActionScriptReserved">return</span>;
+            
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">_renderer</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">primitiveProperties</span><span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptDefault_Text">uint</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">priIndex</span><span class="ActionScriptOperator">*</span>9 <span class="ActionScriptOperator">+</span> 2<span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptBracket/Brace">]</span> <span class="ActionScriptOperator">&gt;</span> <span class="ActionScriptDefault_Text">_screenX</span><span class="ActionScriptBracket/Brace">)</span>
+                <span class="ActionScriptReserved">return</span>;
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">_renderer</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">primitiveProperties</span><span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptDefault_Text">uint</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">priIndex</span><span class="ActionScriptOperator">*</span>9 <span class="ActionScriptOperator">+</span> 3<span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptBracket/Brace">]</span> <span class="ActionScriptOperator">&lt;</span> <span class="ActionScriptDefault_Text">_screenX</span><span class="ActionScriptBracket/Brace">)</span>
+                <span class="ActionScriptReserved">return</span>;
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">_renderer</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">primitiveProperties</span><span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptDefault_Text">uint</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">priIndex</span><span class="ActionScriptOperator">*</span>9 <span class="ActionScriptOperator">+</span> 4<span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptBracket/Brace">]</span> <span class="ActionScriptOperator">&gt;</span> <span class="ActionScriptDefault_Text">_screenY</span><span class="ActionScriptBracket/Brace">)</span>
+                <span class="ActionScriptReserved">return</span>;
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">_renderer</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">primitiveProperties</span><span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptDefault_Text">uint</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">priIndex</span><span class="ActionScriptOperator">*</span>9 <span class="ActionScriptOperator">+</span> 5<span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptBracket/Brace">]</span> <span class="ActionScriptOperator">&lt;</span> <span class="ActionScriptDefault_Text">_screenY</span><span class="ActionScriptBracket/Brace">)</span>
+                <span class="ActionScriptReserved">return</span>;
+            
+            <span class="ActionScriptDefault_Text">_primitiveElement</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">_renderer</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">primitiveElements</span><span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptDefault_Text">priIndex</span><span class="ActionScriptBracket/Brace">]</span>;
+            
+            <span class="ActionScriptComment">//if (_primitiveType == PrimitiveType.DISPLAY_OBJECT &amp;&amp; !(_primitiveElement as SpriteVO).displayObject.hitTestPoint(_hitPointX, _hitPointY, true))
+</span>            <span class="ActionScriptComment">//    return;
+</span>            
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">_hitSourceObject</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">contains</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">priIndex</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">_renderer</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">_screenX</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">_screenY</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptBracket/Brace">{</span>
+                <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">uvt</span>:<span class="ActionScriptDefault_Text">Vector3D</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">_hitSourceObject</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">getUVT</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">priIndex</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">_renderer</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">_screenX</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">_screenY</span><span class="ActionScriptBracket/Brace">)</span>;
+                <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">z</span>:<span class="ActionScriptDefault_Text">Number</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">_view</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">camera</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">lens</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">getScreenZ</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">uvt</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">z</span><span class="ActionScriptBracket/Brace">)</span>;
+                <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">_screenZ</span> <span class="ActionScriptOperator">&gt;</span> <span class="ActionScriptDefault_Text">z</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptBracket/Brace">{</span>
+                    <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">_primitiveType</span> <span class="ActionScriptOperator">==</span> <span class="ActionScriptDefault_Text">PrimitiveType</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">FACE</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptBracket/Brace">{</span>
+                        <span class="ActionScriptComment">//return if material pixel is transparent
+</span>                        <span class="ActionScriptComment">//TODO: sort out eventuality for composite materials
+</span>                        <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">bitmapMaterial</span>:<span class="ActionScriptDefault_Text">BitmapMaterial</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">_renderer</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">primitiveMaterials</span><span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptDefault_Text">priIndex</span><span class="ActionScriptBracket/Brace">]</span> <span class="ActionScriptReserved">as</span> <span class="ActionScriptDefault_Text">BitmapMaterial</span>;
+                        <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">bitmapMaterial</span> <span class="ActionScriptOperator">&amp;&amp;</span> <span class="ActionScriptOperator">!</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">bitmapMaterial</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">getPixel32</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">uvt</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">x</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">uvt</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">y</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptOperator">&gt;&gt;</span> 24<span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptOperator">&amp;&amp;</span> <span class="ActionScriptOperator">!</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">bitmapMaterial</span> <span class="ActionScriptReserved">is</span> <span class="ActionScriptDefault_Text">CompositeMaterial</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptBracket/Brace">)</span>
+                            <span class="ActionScriptReserved">return</span>;
+                        <span class="ActionScriptDefault_Text">_uv</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">UV</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">uvt</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">x</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">uvt</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">y</span><span class="ActionScriptBracket/Brace">)</span>;
+                    <span class="ActionScriptBracket/Brace">}</span> <span class="ActionScriptReserved">else</span> <span class="ActionScriptBracket/Brace">{</span>
+                        <span class="ActionScriptDefault_Text">_uv</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">null</span>;
+                    <span class="ActionScriptBracket/Brace">}</span>
+                    
+                    <span class="ActionScriptDefault_Text">_screenZ</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">z</span>;
+                    <span class="ActionScriptDefault_Text">_material</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">_renderer</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">primitiveMaterials</span><span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptDefault_Text">priIndex</span><span class="ActionScriptBracket/Brace">]</span>;
+                    
+                    <span class="ActionScriptComment">//persp = camera.zoom / (1 + screenZ / camera.focus);
+</span>                    <span class="ActionScriptDefault_Text">_persp</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">_view</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">camera</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">lens</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">getPerspective</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">_screenZ</span><span class="ActionScriptBracket/Brace">)</span>;
+                    <span class="ActionScriptDefault_Text">_inv</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">_view</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">camera</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">invViewMatrix</span>;
+                    
+                    <span class="ActionScriptDefault_Text">_sceneX</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">_screenX</span> <span class="ActionScriptOperator">/</span> <span class="ActionScriptDefault_Text">_persp</span> <span class="ActionScriptOperator">*</span> <span class="ActionScriptDefault_Text">_inv</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">rawData</span><span class="ActionScriptBracket/Brace">[</span>0<span class="ActionScriptBracket/Brace">]</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptDefault_Text">_screenY</span> <span class="ActionScriptOperator">/</span> <span class="ActionScriptDefault_Text">_persp</span> <span class="ActionScriptOperator">*</span> <span class="ActionScriptDefault_Text">_inv</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">rawData</span><span class="ActionScriptBracket/Brace">[</span>4<span class="ActionScriptBracket/Brace">]</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptDefault_Text">_screenZ</span> <span class="ActionScriptOperator">*</span> <span class="ActionScriptDefault_Text">_inv</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">rawData</span><span class="ActionScriptBracket/Brace">[</span>8<span class="ActionScriptBracket/Brace">]</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptDefault_Text">_inv</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">rawData</span><span class="ActionScriptBracket/Brace">[</span>12<span class="ActionScriptBracket/Brace">]</span>;
+                    <span class="ActionScriptDefault_Text">_sceneY</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">_screenX</span> <span class="ActionScriptOperator">/</span> <span class="ActionScriptDefault_Text">_persp</span> <span class="ActionScriptOperator">*</span> <span class="ActionScriptDefault_Text">_inv</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">rawData</span><span class="ActionScriptBracket/Brace">[</span>1<span class="ActionScriptBracket/Brace">]</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptDefault_Text">_screenY</span> <span class="ActionScriptOperator">/</span> <span class="ActionScriptDefault_Text">_persp</span> <span class="ActionScriptOperator">*</span> <span class="ActionScriptDefault_Text">_inv</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">rawData</span><span class="ActionScriptBracket/Brace">[</span>5<span class="ActionScriptBracket/Brace">]</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptDefault_Text">_screenZ</span> <span class="ActionScriptOperator">*</span> <span class="ActionScriptDefault_Text">_inv</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">rawData</span><span class="ActionScriptBracket/Brace">[</span>9<span class="ActionScriptBracket/Brace">]</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptDefault_Text">_inv</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">rawData</span><span class="ActionScriptBracket/Brace">[</span>13<span class="ActionScriptBracket/Brace">]</span>;
+                    <span class="ActionScriptDefault_Text">_sceneZ</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">_screenX</span> <span class="ActionScriptOperator">/</span> <span class="ActionScriptDefault_Text">_persp</span> <span class="ActionScriptOperator">*</span> <span class="ActionScriptDefault_Text">_inv</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">rawData</span><span class="ActionScriptBracket/Brace">[</span>2<span class="ActionScriptBracket/Brace">]</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptDefault_Text">_screenY</span> <span class="ActionScriptOperator">/</span> <span class="ActionScriptDefault_Text">_persp</span> <span class="ActionScriptOperator">*</span> <span class="ActionScriptDefault_Text">_inv</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">rawData</span><span class="ActionScriptBracket/Brace">[</span>6<span class="ActionScriptBracket/Brace">]</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptDefault_Text">_screenZ</span> <span class="ActionScriptOperator">*</span> <span class="ActionScriptDefault_Text">_inv</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">rawData</span><span class="ActionScriptBracket/Brace">[</span>10<span class="ActionScriptBracket/Brace">]</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptDefault_Text">_inv</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">rawData</span><span class="ActionScriptBracket/Brace">[</span>14<span class="ActionScriptBracket/Brace">]</span>;
+                    
+                    <span class="ActionScriptDefault_Text">_object</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">_source</span>;
+                    <span class="ActionScriptDefault_Text">_elementVO</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">_primitiveElement</span>;
+
+                <span class="ActionScriptBracket/Brace">}</span>
+            <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptBracket/Brace">}</span>
+                
+        <span class="ActionScriptASDoc">/**
+         * 
+         */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">get</span> <span class="ActionScriptDefault_Text">screenX</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">Number</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">_screenX</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptASDoc">/**
+         * 
+         */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">get</span> <span class="ActionScriptDefault_Text">screenY</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">Number</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">_screenY</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptASDoc">/**
+         * 
+         */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">get</span> <span class="ActionScriptDefault_Text">screenZ</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">Number</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">_screenZ</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptASDoc">/**
+         * 
+         */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">get</span> <span class="ActionScriptDefault_Text">sceneX</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">Number</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">_sceneX</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptASDoc">/**
+         * 
+         */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">get</span> <span class="ActionScriptDefault_Text">sceneY</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">Number</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">_sceneY</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptASDoc">/**
+         * 
+         */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">get</span> <span class="ActionScriptDefault_Text">sceneZ</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">Number</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">_sceneZ</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptASDoc">/**
+         * 
+         */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">get</span> <span class="ActionScriptDefault_Text">view</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">View3D</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">_view</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptASDoc">/**
+         * 
+         */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">get</span> <span class="ActionScriptDefault_Text">material</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">Material</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">_material</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptASDoc">/**
+         * 
+         */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">get</span> <span class="ActionScriptDefault_Text">elementVO</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">ElementVO</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">_elementVO</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptASDoc">/**
+         * 
+         */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">get</span> <span class="ActionScriptDefault_Text">object</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">Object3D</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">_object</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptASDoc">/**
+         * 
+         */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">get</span> <span class="ActionScriptDefault_Text">uv</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">UV</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">_uv</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">HitManager</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">view</span>:<span class="ActionScriptDefault_Text">View3D</span><span class="ActionScriptBracket/Brace">)</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptDefault_Text">_view</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">view</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptASDoc">/** 
+         * Finds the object that is rendered under a certain view coordinate. Used for mouse click events.
+         */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">findHit</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">session</span>:<span class="ActionScriptDefault_Text">AbstractSession</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">x</span>:<span class="ActionScriptDefault_Text">Number</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">y</span>:<span class="ActionScriptDefault_Text">Number</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptReserved">void</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptDefault_Text">_focus</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">_view</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">camera</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">focus</span>;
+            
+            <span class="ActionScriptDefault_Text">_screenX</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">x</span>;
+            <span class="ActionScriptDefault_Text">_screenY</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">y</span>;
+            <span class="ActionScriptDefault_Text">_screenZ</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">Infinity</span>;
+            <span class="ActionScriptDefault_Text">_material</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">null</span>;
+            <span class="ActionScriptDefault_Text">_object</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">null</span>;
+            
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptOperator">!</span><span class="ActionScriptDefault_Text">session</span> <span class="ActionScriptOperator">||</span> <span class="ActionScriptOperator">!</span><span class="ActionScriptDefault_Text">_view</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">_mouseIsOverView</span><span class="ActionScriptBracket/Brace">)</span>
+                <span class="ActionScriptReserved">return</span>;
+            
+            <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">screenPoint</span>:<span class="ActionScriptDefault_Text">Point</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">Point</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">x</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">y</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">stagePoint</span>:<span class="ActionScriptDefault_Text">Point</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">_view</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">localToGlobal</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">screenPoint</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptDefault_Text">_hitPointX</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">stagePoint</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">x</span>;
+            <span class="ActionScriptDefault_Text">_hitPointY</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">stagePoint</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">y</span>;
+            
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">_view</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">session</span> <span class="ActionScriptReserved">is</span> <span class="ActionScriptDefault_Text">BitmapSession</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptBracket/Brace">{</span>
+                <span class="ActionScriptDefault_Text">_container</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">_view</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">session</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">getContainer</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">_view</span><span class="ActionScriptBracket/Brace">)</span>;
+                <span class="ActionScriptDefault_Text">_hitPointX</span> <span class="ActionScriptOperator">+=</span> <span class="ActionScriptDefault_Text">_container</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">x</span>;
+                <span class="ActionScriptDefault_Text">_hitPointY</span> <span class="ActionScriptOperator">+=</span> <span class="ActionScriptDefault_Text">_container</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">y</span>;
+            <span class="ActionScriptBracket/Brace">}</span>
+            
+            <span class="ActionScriptDefault_Text">checkSession</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">session</span><span class="ActionScriptBracket/Brace">)</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptASDoc">/**
+         * Returns a 3d mouse event object populated with the properties from the hit point.
+         */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">getMouseEvent</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">type</span>:<span class="ActionScriptDefault_Text">String</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">MouseEvent3D</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">event</span>:<span class="ActionScriptDefault_Text">MouseEvent3D</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">MouseEvent3D</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">type</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptDefault_Text">event</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">screenX</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">_screenX</span>;
+            <span class="ActionScriptDefault_Text">event</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">screenY</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">_screenY</span>;
+            <span class="ActionScriptDefault_Text">event</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">screenZ</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">_screenZ</span>;
+            <span class="ActionScriptDefault_Text">event</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">sceneX</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">_sceneX</span>;
+            <span class="ActionScriptDefault_Text">event</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">sceneY</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">_sceneY</span>;
+            <span class="ActionScriptDefault_Text">event</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">sceneZ</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">_sceneZ</span>;
+            <span class="ActionScriptDefault_Text">event</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">view</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">_view</span>;
+            <span class="ActionScriptDefault_Text">event</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">material</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">_material</span>;
+            <span class="ActionScriptDefault_Text">event</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">elementVO</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">_elementVO</span>;
+            <span class="ActionScriptDefault_Text">event</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">object</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">_object</span>;
+            <span class="ActionScriptDefault_Text">event</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">uv</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">_uv</span>;
+
+            <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">event</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+    <span class="ActionScriptBracket/Brace">}</span>
+<span class="ActionScriptBracket/Brace">}</span>
+</pre></body>
+</html>

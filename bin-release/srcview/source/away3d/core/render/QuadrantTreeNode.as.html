@@ -1,0 +1,274 @@
+<!-- saved from url=(0014)about:internet -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<title>QuadrantTreeNode.as</title>
+<link rel="stylesheet" type="text/css" href="../../../../SourceStyles.css"/>
+</head>
+
+<body><pre><span class="ActionScriptpackage">package</span> <span class="ActionScriptDefault_Text">away3d</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">core</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">render</span>
+<span class="ActionScriptBracket/Brace">{</span>
+    <span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">away3d</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">arcane</span>;
+    <span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">away3d</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">core</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">base</span><span class="ActionScriptOperator">.</span><span class="ActionScriptOperator">*</span>;
+    
+    <span class="ActionScriptReserved">use</span> <span class="ActionScriptReserved">namespace</span> <span class="ActionScriptDefault_Text">arcane</span>;
+    <span class="ActionScriptASDoc">/**
+    * Quadrant tree node
+    */</span>
+    <span class="ActionScriptReserved">public</span> <span class="ActionScriptReserved">final</span> <span class="ActionScriptclass">class</span> <span class="ActionScriptDefault_Text">QuadrantTreeNode</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptReserved">private</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">render_order</span>:<span class="ActionScriptDefault_Text">Array</span>;
+        <span class="ActionScriptReserved">private</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">render_center_length</span>:<span class="ActionScriptDefault_Text">int</span> <span class="ActionScriptOperator">=</span> -1;
+        <span class="ActionScriptReserved">private</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">render_center_index</span>:<span class="ActionScriptDefault_Text">int</span> <span class="ActionScriptOperator">=</span> -1;
+        <span class="ActionScriptReserved">private</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">halfwidth</span>:<span class="ActionScriptDefault_Text">Number</span>;
+        <span class="ActionScriptReserved">private</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">halfheight</span>:<span class="ActionScriptDefault_Text">Number</span>;
+        <span class="ActionScriptReserved">private</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">level</span>:<span class="ActionScriptDefault_Text">int</span>;
+        <span class="ActionScriptReserved">private</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">maxlevel</span>:<span class="ActionScriptDefault_Text">int</span> <span class="ActionScriptOperator">=</span> 4;
+        
+        <span class="ActionScriptReserved">private</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">render_other</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">limit</span>:<span class="ActionScriptDefault_Text">Number</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptReserved">void</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">lefttopFlag</span><span class="ActionScriptBracket/Brace">)</span>
+                <span class="ActionScriptDefault_Text">lefttop</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">render</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">limit</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">leftbottomFlag</span><span class="ActionScriptBracket/Brace">)</span>
+                <span class="ActionScriptDefault_Text">leftbottom</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">render</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">limit</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">righttopFlag</span><span class="ActionScriptBracket/Brace">)</span>
+                <span class="ActionScriptDefault_Text">righttop</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">render</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">limit</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">rightbottomFlag</span><span class="ActionScriptBracket/Brace">)</span>
+                <span class="ActionScriptDefault_Text">rightbottom</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">render</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">limit</span><span class="ActionScriptBracket/Brace">)</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptASDoc">/**
+        * Array of primitives indices that belong to the quadrant.
+        */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">center</span>:<span class="ActionScriptDefault_Text">Array</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">Array</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>;
+        
+        <span class="ActionScriptASDoc">/**
+        * Array of primitives screenZs that belong to the quadrant.
+        */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">screenZs</span>:<span class="ActionScriptDefault_Text">Array</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">Array</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>;
+        
+        <span class="ActionScriptASDoc">/**
+        * The quadrant tree node for the top left quadrant.
+        */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">lefttop</span>:<span class="ActionScriptDefault_Text">QuadrantTreeNode</span>;
+        
+        <span class="ActionScriptASDoc">/**
+        * The quadrant tree node for the bottom left quadrant.
+        */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">leftbottom</span>:<span class="ActionScriptDefault_Text">QuadrantTreeNode</span>;
+        
+        <span class="ActionScriptASDoc">/**
+        * The quadrant tree node for the top right quadrant.
+        */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">righttop</span>:<span class="ActionScriptDefault_Text">QuadrantTreeNode</span>;
+        
+        <span class="ActionScriptASDoc">/**
+        * The quadrant tree node for the bottom right quadrant.
+        */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">rightbottom</span>:<span class="ActionScriptDefault_Text">QuadrantTreeNode</span>;
+        
+        <span class="ActionScriptASDoc">/**
+        * Determines if the bounds of the top left quadrant need re-calculating.
+        */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">lefttopFlag</span>:<span class="ActionScriptDefault_Text">Boolean</span>;
+        
+        <span class="ActionScriptASDoc">/**
+        * Determines if the bounds of the bottom left quadrant need re-calculating.
+        */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">leftbottomFlag</span>:<span class="ActionScriptDefault_Text">Boolean</span>;
+        
+        <span class="ActionScriptASDoc">/**
+        * Determines if the bounds of the top right quadrant need re-calculating.
+        */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">righttopFlag</span>:<span class="ActionScriptDefault_Text">Boolean</span>;
+        
+        <span class="ActionScriptASDoc">/**
+        * Determines if the bounds of the bottom right quadrant need re-calculating.
+        */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">rightbottomFlag</span>:<span class="ActionScriptDefault_Text">Boolean</span>;
+                
+        <span class="ActionScriptASDoc">/**
+        * Determines if the quadrant node contains only one source.
+        */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">onlysourceFlag</span>:<span class="ActionScriptDefault_Text">Boolean</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">true</span>;
+        
+        <span class="ActionScriptASDoc">/**
+         * hold the 3d object referenced when &lt;code&gt;onlysourceFlag&lt;/code&gt; is true.
+         */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">onlysource</span>:<span class="ActionScriptDefault_Text">Object3D</span>;
+        
+        <span class="ActionScriptASDoc">/**
+        * The x coordinate of the quadrant division.
+        */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">xdiv</span>:<span class="ActionScriptDefault_Text">Number</span>;
+        
+        <span class="ActionScriptASDoc">/**
+        * The x coordinate of the quadrant division.
+        */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">ydiv</span>:<span class="ActionScriptDefault_Text">Number</span>;
+        
+        <span class="ActionScriptASDoc">/**
+         * The quadrant renderer.
+         */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">renderer</span>:<span class="ActionScriptDefault_Text">QuadrantRenderer</span>;
+                
+        <span class="ActionScriptASDoc">/**
+         * The quadrant parent.
+         */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">parent</span>:<span class="ActionScriptDefault_Text">QuadrantTreeNode</span>;
+        
+        <span class="ActionScriptASDoc">/**
+         * Creates a new &lt;code&gt;PrimitiveQuadrantTreeNode&lt;/code&gt; object.
+         *
+         * @param    xdiv    The x coordinate for the division between left and right child quadrants.
+         * @param    ydiv    The y coordinate for the division between top and bottom child quadrants.
+         * @param    width    The width of the quadrant node.
+         * @param    xdiv    The height of the quadrant node.
+         * @param    level    The iteration number of the quadrant node.
+         * @param    parent    The parent quadrant of the quadrant node.
+         */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">QuadrantTreeNode</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">xdiv</span>:<span class="ActionScriptDefault_Text">Number</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">ydiv</span>:<span class="ActionScriptDefault_Text">Number</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">width</span>:<span class="ActionScriptDefault_Text">Number</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">height</span>:<span class="ActionScriptDefault_Text">Number</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">level</span>:<span class="ActionScriptDefault_Text">int</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">renderer</span>:<span class="ActionScriptDefault_Text">QuadrantRenderer</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">parent</span>:<span class="ActionScriptDefault_Text">QuadrantTreeNode</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">null</span><span class="ActionScriptBracket/Brace">)</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">this</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">level</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">level</span>;
+            <span class="ActionScriptReserved">this</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">xdiv</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">xdiv</span>;
+            <span class="ActionScriptReserved">this</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">ydiv</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">ydiv</span>;
+            <span class="ActionScriptDefault_Text">halfwidth</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">width</span> <span class="ActionScriptOperator">/</span> 2;
+            <span class="ActionScriptDefault_Text">halfheight</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">height</span> <span class="ActionScriptOperator">/</span> 2;
+            <span class="ActionScriptReserved">this</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">renderer</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">renderer</span>;
+            <span class="ActionScriptReserved">this</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">parent</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">parent</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptASDoc">/**
+         * Adds a primitive to the quadrant
+         */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">push</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">renderer</span>:<span class="ActionScriptDefault_Text">QuadrantRenderer</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">priIndex</span>:<span class="ActionScriptDefault_Text">uint</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">QuadrantTreeNode</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">onlysourceFlag</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptBracket/Brace">{</span>
+                <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">onlysource</span> <span class="ActionScriptOperator">!=</span> <span class="ActionScriptReserved">null</span> <span class="ActionScriptOperator">&amp;&amp;</span> <span class="ActionScriptDefault_Text">onlysource</span> <span class="ActionScriptOperator">!=</span> <span class="ActionScriptDefault_Text">renderer</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">primitiveSource</span><span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptDefault_Text">priIndex</span><span class="ActionScriptBracket/Brace">]</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">source</span><span class="ActionScriptBracket/Brace">)</span>
+                    <span class="ActionScriptDefault_Text">onlysourceFlag</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">false</span>;
+                <span class="ActionScriptDefault_Text">onlysource</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">renderer</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">primitiveSource</span><span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptDefault_Text">priIndex</span><span class="ActionScriptBracket/Brace">]</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">source</span>;
+            <span class="ActionScriptBracket/Brace">}</span>
+            
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">level</span> <span class="ActionScriptOperator">&lt;</span> <span class="ActionScriptDefault_Text">maxlevel</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptBracket/Brace">{</span>
+                <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">renderer</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">primitiveProperties</span><span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptDefault_Text">uint</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">priIndex</span><span class="ActionScriptOperator">*</span>9 <span class="ActionScriptOperator">+</span> 3<span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptBracket/Brace">]</span> <span class="ActionScriptOperator">&lt;=</span> <span class="ActionScriptDefault_Text">xdiv</span><span class="ActionScriptBracket/Brace">)</span>
+                <span class="ActionScriptBracket/Brace">{</span>
+                    <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">renderer</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">primitiveProperties</span><span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptDefault_Text">uint</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">priIndex</span><span class="ActionScriptOperator">*</span>9 <span class="ActionScriptOperator">+</span> 5<span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptBracket/Brace">]</span> <span class="ActionScriptOperator">&lt;=</span> <span class="ActionScriptDefault_Text">ydiv</span><span class="ActionScriptBracket/Brace">)</span>
+                    <span class="ActionScriptBracket/Brace">{</span>
+                        <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">lefttop</span> <span class="ActionScriptOperator">==</span> <span class="ActionScriptReserved">null</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptBracket/Brace">{</span>
+                            <span class="ActionScriptDefault_Text">lefttopFlag</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">true</span>;
+                            <span class="ActionScriptDefault_Text">lefttop</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">QuadrantTreeNode</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">xdiv</span> <span class="ActionScriptOperator">-</span> <span class="ActionScriptDefault_Text">halfwidth</span><span class="ActionScriptOperator">/</span>2<span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">ydiv</span> <span class="ActionScriptOperator">-</span> <span class="ActionScriptDefault_Text">halfheight</span><span class="ActionScriptOperator">/</span>2<span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">halfwidth</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">halfheight</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">level</span><span class="ActionScriptOperator">+</span>1<span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">renderer</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptReserved">this</span><span class="ActionScriptBracket/Brace">)</span>;
+                        <span class="ActionScriptBracket/Brace">}</span> <span class="ActionScriptReserved">else</span> <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptOperator">!</span><span class="ActionScriptDefault_Text">lefttopFlag</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptBracket/Brace">{</span>
+                            <span class="ActionScriptDefault_Text">lefttopFlag</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">true</span>;
+                            <span class="ActionScriptDefault_Text">lefttop</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">reset</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">xdiv</span> <span class="ActionScriptOperator">-</span> <span class="ActionScriptDefault_Text">halfwidth</span><span class="ActionScriptOperator">/</span>2<span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">ydiv</span> <span class="ActionScriptOperator">-</span> <span class="ActionScriptDefault_Text">halfheight</span><span class="ActionScriptOperator">/</span>2<span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">halfwidth</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">halfheight</span><span class="ActionScriptBracket/Brace">)</span>;
+                        <span class="ActionScriptBracket/Brace">}</span>
+                        <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">lefttop</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">push</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">renderer</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">priIndex</span><span class="ActionScriptBracket/Brace">)</span>;
+                    <span class="ActionScriptBracket/Brace">}</span>
+                    <span class="ActionScriptReserved">else</span> <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">renderer</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">primitiveProperties</span><span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptDefault_Text">uint</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">priIndex</span><span class="ActionScriptOperator">*</span>9 <span class="ActionScriptOperator">+</span> 4<span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptBracket/Brace">]</span> <span class="ActionScriptOperator">&gt;=</span> <span class="ActionScriptDefault_Text">ydiv</span><span class="ActionScriptBracket/Brace">)</span>
+                    <span class="ActionScriptBracket/Brace">{</span>
+                        <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">leftbottom</span> <span class="ActionScriptOperator">==</span> <span class="ActionScriptReserved">null</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptBracket/Brace">{</span>
+                            <span class="ActionScriptDefault_Text">leftbottomFlag</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">true</span>;
+                            <span class="ActionScriptDefault_Text">leftbottom</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">QuadrantTreeNode</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">xdiv</span> <span class="ActionScriptOperator">-</span> <span class="ActionScriptDefault_Text">halfwidth</span><span class="ActionScriptOperator">/</span>2<span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">ydiv</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptDefault_Text">halfheight</span><span class="ActionScriptOperator">/</span>2<span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">halfwidth</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">halfheight</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">level</span><span class="ActionScriptOperator">+</span>1<span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">renderer</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptReserved">this</span><span class="ActionScriptBracket/Brace">)</span>;
+                        <span class="ActionScriptBracket/Brace">}</span> <span class="ActionScriptReserved">else</span> <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptOperator">!</span><span class="ActionScriptDefault_Text">leftbottomFlag</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptBracket/Brace">{</span>
+                            <span class="ActionScriptDefault_Text">leftbottomFlag</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">true</span>;
+                            <span class="ActionScriptDefault_Text">leftbottom</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">reset</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">xdiv</span> <span class="ActionScriptOperator">-</span> <span class="ActionScriptDefault_Text">halfwidth</span><span class="ActionScriptOperator">/</span>2<span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">ydiv</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptDefault_Text">halfheight</span><span class="ActionScriptOperator">/</span>2<span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">halfwidth</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">halfheight</span><span class="ActionScriptBracket/Brace">)</span>;
+                        <span class="ActionScriptBracket/Brace">}</span>
+                        <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">leftbottom</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">push</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">renderer</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">priIndex</span><span class="ActionScriptBracket/Brace">)</span>;
+                    <span class="ActionScriptBracket/Brace">}</span>
+                <span class="ActionScriptBracket/Brace">}</span>
+                <span class="ActionScriptReserved">else</span> <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">renderer</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">primitiveProperties</span><span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptDefault_Text">uint</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">priIndex</span><span class="ActionScriptOperator">*</span>9 <span class="ActionScriptOperator">+</span> 2<span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptBracket/Brace">]</span> <span class="ActionScriptOperator">&gt;=</span> <span class="ActionScriptDefault_Text">xdiv</span><span class="ActionScriptBracket/Brace">)</span>
+                <span class="ActionScriptBracket/Brace">{</span>
+                    <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">renderer</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">primitiveProperties</span><span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptDefault_Text">uint</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">priIndex</span><span class="ActionScriptOperator">*</span>9 <span class="ActionScriptOperator">+</span> 5<span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptBracket/Brace">]</span> <span class="ActionScriptOperator">&lt;=</span> <span class="ActionScriptDefault_Text">ydiv</span><span class="ActionScriptBracket/Brace">)</span>
+                    <span class="ActionScriptBracket/Brace">{</span>
+                        <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">righttop</span> <span class="ActionScriptOperator">==</span> <span class="ActionScriptReserved">null</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptBracket/Brace">{</span>
+                            <span class="ActionScriptDefault_Text">righttopFlag</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">true</span>;
+                            <span class="ActionScriptDefault_Text">righttop</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">QuadrantTreeNode</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">xdiv</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptDefault_Text">halfwidth</span><span class="ActionScriptOperator">/</span>2<span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">ydiv</span> <span class="ActionScriptOperator">-</span> <span class="ActionScriptDefault_Text">halfheight</span><span class="ActionScriptOperator">/</span>2<span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">halfwidth</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">halfheight</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">level</span><span class="ActionScriptOperator">+</span>1<span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">renderer</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptReserved">this</span><span class="ActionScriptBracket/Brace">)</span>;
+                        <span class="ActionScriptBracket/Brace">}</span> <span class="ActionScriptReserved">else</span> <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptOperator">!</span><span class="ActionScriptDefault_Text">righttopFlag</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptBracket/Brace">{</span>
+                            <span class="ActionScriptDefault_Text">righttopFlag</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">true</span>;
+                            <span class="ActionScriptDefault_Text">righttop</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">reset</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">xdiv</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptDefault_Text">halfwidth</span><span class="ActionScriptOperator">/</span>2<span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">ydiv</span> <span class="ActionScriptOperator">-</span> <span class="ActionScriptDefault_Text">halfheight</span><span class="ActionScriptOperator">/</span>2<span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">halfwidth</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">halfheight</span><span class="ActionScriptBracket/Brace">)</span>;
+                        <span class="ActionScriptBracket/Brace">}</span>
+                        <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">righttop</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">push</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">renderer</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">priIndex</span><span class="ActionScriptBracket/Brace">)</span>;
+                    <span class="ActionScriptBracket/Brace">}</span>
+                    <span class="ActionScriptReserved">else</span> <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">renderer</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">primitiveProperties</span><span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptDefault_Text">uint</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">priIndex</span><span class="ActionScriptOperator">*</span>9 <span class="ActionScriptOperator">+</span> 4<span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptBracket/Brace">]</span> <span class="ActionScriptOperator">&gt;=</span> <span class="ActionScriptDefault_Text">ydiv</span><span class="ActionScriptBracket/Brace">)</span>
+                    <span class="ActionScriptBracket/Brace">{</span>
+                        <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">rightbottom</span> <span class="ActionScriptOperator">==</span> <span class="ActionScriptReserved">null</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptBracket/Brace">{</span>
+                            <span class="ActionScriptDefault_Text">rightbottomFlag</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">true</span>;
+                            <span class="ActionScriptDefault_Text">rightbottom</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">QuadrantTreeNode</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">xdiv</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptDefault_Text">halfwidth</span><span class="ActionScriptOperator">/</span>2<span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">ydiv</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptDefault_Text">halfheight</span><span class="ActionScriptOperator">/</span>2<span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">halfwidth</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">halfheight</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">level</span><span class="ActionScriptOperator">+</span>1<span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">renderer</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptReserved">this</span><span class="ActionScriptBracket/Brace">)</span>;
+                        <span class="ActionScriptBracket/Brace">}</span> <span class="ActionScriptReserved">else</span> <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptOperator">!</span><span class="ActionScriptDefault_Text">rightbottomFlag</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptBracket/Brace">{</span>
+                            <span class="ActionScriptDefault_Text">rightbottomFlag</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">true</span>;
+                            <span class="ActionScriptDefault_Text">rightbottom</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">reset</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">xdiv</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptDefault_Text">halfwidth</span><span class="ActionScriptOperator">/</span>2<span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">ydiv</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptDefault_Text">halfheight</span><span class="ActionScriptOperator">/</span>2<span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">halfwidth</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">halfheight</span><span class="ActionScriptBracket/Brace">)</span>;
+                        <span class="ActionScriptBracket/Brace">}</span>
+                        <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">rightbottom</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">push</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">renderer</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">priIndex</span><span class="ActionScriptBracket/Brace">)</span>;
+                    <span class="ActionScriptBracket/Brace">}</span>
+                <span class="ActionScriptBracket/Brace">}</span>
+            <span class="ActionScriptBracket/Brace">}</span>
+            
+            <span class="ActionScriptComment">//no quadrant, store in primitives array
+</span>            <span class="ActionScriptDefault_Text">center</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">push</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">priIndex</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptReserved">return</span> <span class="ActionScriptReserved">this</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptASDoc">/**
+        * Clears the quadrant of all primitives and child nodes
+        */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">reset</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">xdiv</span>:<span class="ActionScriptDefault_Text">Number</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">ydiv</span>:<span class="ActionScriptDefault_Text">Number</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">width</span>:<span class="ActionScriptDefault_Text">Number</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">height</span>:<span class="ActionScriptDefault_Text">Number</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptReserved">void</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">this</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">xdiv</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">xdiv</span>;
+            <span class="ActionScriptReserved">this</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">ydiv</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">ydiv</span>;
+            <span class="ActionScriptDefault_Text">halfwidth</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">width</span> <span class="ActionScriptOperator">/</span> 2;
+            <span class="ActionScriptDefault_Text">halfheight</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">height</span> <span class="ActionScriptOperator">/</span> 2;
+            
+            <span class="ActionScriptDefault_Text">lefttopFlag</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">false</span>;
+            <span class="ActionScriptDefault_Text">leftbottomFlag</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">false</span>;
+            <span class="ActionScriptDefault_Text">righttopFlag</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">false</span>;
+            <span class="ActionScriptDefault_Text">rightbottomFlag</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">false</span>;
+            <span class="ActionScriptDefault_Text">center</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">length</span> <span class="ActionScriptOperator">=</span> 0;
+            
+            <span class="ActionScriptDefault_Text">onlysourceFlag</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">true</span>;
+            <span class="ActionScriptDefault_Text">onlysource</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">null</span>;
+            
+            <span class="ActionScriptDefault_Text">render_center_length</span> <span class="ActionScriptOperator">=</span> -1;
+            <span class="ActionScriptDefault_Text">render_center_index</span> <span class="ActionScriptOperator">=</span> -1;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        
+        <span class="ActionScriptASDoc">/**
+         * Sorts and renders the contents of the quadrant tree
+         */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">render</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">limit</span>:<span class="ActionScriptDefault_Text">Number</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptReserved">void</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">render_center_length</span> <span class="ActionScriptOperator">==</span> <span class="ActionScriptOperator">-</span>1<span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptBracket/Brace">{</span>
+                <span class="ActionScriptDefault_Text">render_center_length</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">center</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">length</span>;
+                <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">render_center_length</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptBracket/Brace">{</span>
+                    <span class="ActionScriptDefault_Text">render_center_index</span> <span class="ActionScriptOperator">=</span> 0;
+                    <span class="ActionScriptDefault_Text">screenZs</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">length</span> <span class="ActionScriptOperator">=</span> 0;
+                    
+                    <span class="ActionScriptReserved">while</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">render_center_index</span> <span class="ActionScriptOperator">&lt;</span> <span class="ActionScriptDefault_Text">render_center_length</span><span class="ActionScriptBracket/Brace">)</span>
+                        <span class="ActionScriptDefault_Text">screenZs</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">push</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">renderer</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">primitiveScreenZ</span><span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptDefault_Text">center</span><span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptDefault_Text">render_center_index</span><span class="ActionScriptOperator">++</span><span class="ActionScriptBracket/Brace">]</span><span class="ActionScriptBracket/Brace">]</span><span class="ActionScriptBracket/Brace">)</span>;
+                    
+                    <span class="ActionScriptDefault_Text">render_order</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">screenZs</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">sort</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">Array</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">DESCENDING</span> <span class="ActionScriptOperator">|</span> <span class="ActionScriptDefault_Text">Array</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">NUMERIC</span> <span class="ActionScriptOperator">|</span> <span class="ActionScriptDefault_Text">Array</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">RETURNINDEXEDARRAY</span><span class="ActionScriptBracket/Brace">)</span>;
+                <span class="ActionScriptBracket/Brace">}</span>
+                <span class="ActionScriptDefault_Text">render_center_index</span> <span class="ActionScriptOperator">=</span> 0;
+            <span class="ActionScriptBracket/Brace">}</span>
+            
+            <span class="ActionScriptReserved">while</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">render_center_index</span> <span class="ActionScriptOperator">&lt;</span> <span class="ActionScriptDefault_Text">render_center_length</span><span class="ActionScriptBracket/Brace">)</span>
+            <span class="ActionScriptBracket/Brace">{</span>
+                <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">screenIndex</span>:<span class="ActionScriptDefault_Text">uint</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">render_order</span><span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptDefault_Text">render_center_index</span><span class="ActionScriptBracket/Brace">]</span>;
+                <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">screenZ</span>:<span class="ActionScriptDefault_Text">Number</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">screenZs</span><span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptDefault_Text">screenIndex</span><span class="ActionScriptBracket/Brace">]</span>;
+                
+                <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">screenZ</span> <span class="ActionScriptOperator">&lt;</span> <span class="ActionScriptDefault_Text">limit</span><span class="ActionScriptBracket/Brace">)</span>
+                    <span class="ActionScriptReserved">break</span>;
+                
+                <span class="ActionScriptDefault_Text">render_other</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">screenZ</span><span class="ActionScriptBracket/Brace">)</span>;
+                
+                <span class="ActionScriptDefault_Text">renderer</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">renderPrimitive</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">center</span><span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptDefault_Text">screenIndex</span><span class="ActionScriptBracket/Brace">]</span><span class="ActionScriptBracket/Brace">)</span>;
+
+                <span class="ActionScriptDefault_Text">render_center_index</span><span class="ActionScriptOperator">++</span>;
+            <span class="ActionScriptBracket/Brace">}</span>
+            
+            <span class="ActionScriptDefault_Text">render_other</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">limit</span><span class="ActionScriptBracket/Brace">)</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+    <span class="ActionScriptBracket/Brace">}</span>
+<span class="ActionScriptBracket/Brace">}</span>
+</pre></body>
+</html>

@@ -1,0 +1,156 @@
+<!-- saved from url=(0014)about:internet -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<title>LoaderCube.as</title>
+<link rel="stylesheet" type="text/css" href="../../../SourceStyles.css"/>
+</head>
+
+<body><pre><span class="ActionScriptpackage">package</span> <span class="ActionScriptDefault_Text">away3d</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">loaders</span>
+<span class="ActionScriptBracket/Brace">{</span>
+    <span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">away3d</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">materials</span><span class="ActionScriptOperator">.</span><span class="ActionScriptOperator">*</span>;
+    <span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">away3d</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">primitives</span><span class="ActionScriptOperator">.</span><span class="ActionScriptOperator">*</span>;
+    
+    <span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">flash</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">display</span><span class="ActionScriptOperator">.</span><span class="ActionScriptOperator">*</span>;
+    <span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">flash</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">text</span><span class="ActionScriptOperator">.</span><span class="ActionScriptOperator">*</span>;
+ 
+    <span class="ActionScriptASDoc">/**
+     * Default loader class used as a placeholder for loading 3d content
+     */</span>
+    <span class="ActionScriptReserved">public</span> <span class="ActionScriptclass">class</span> <span class="ActionScriptDefault_Text">LoaderCube</span> <span class="ActionScriptReserved">extends</span> <span class="ActionScriptDefault_Text">Loader3D</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptReserved">private</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">side</span>:<span class="ActionScriptDefault_Text">MovieClip</span>;
+        <span class="ActionScriptReserved">private</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">cube</span>:<span class="ActionScriptDefault_Text">Cube</span>;
+        <span class="ActionScriptReserved">private</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">info</span>:<span class="ActionScriptDefault_Text">TextField</span>;
+        <span class="ActionScriptReserved">private</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">tf</span>:<span class="ActionScriptDefault_Text">TextFormat</span>;
+        <span class="ActionScriptReserved">private</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_loaderSize</span>:<span class="ActionScriptDefault_Text">Number</span>;
+        
+        <span class="ActionScriptASDoc">/**
+         * Defines the prefix string used for loading geometry.
+         */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">geometryTitle</span>:<span class="ActionScriptDefault_Text">String</span>;
+        
+        <span class="ActionScriptASDoc">/**
+         * Defines the prefix string used for loading a material file.
+         */</span>
+        <span class="ActionScriptReserved">private</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">materialTitle</span>:<span class="ActionScriptDefault_Text">String</span>;
+        
+        <span class="ActionScriptASDoc">/**
+         * Defines the prefix string used for loading textures.
+         */</span>
+        <span class="ActionScriptReserved">private</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">textureTitle</span>:<span class="ActionScriptDefault_Text">String</span>;
+        
+        <span class="ActionScriptASDoc">/**
+         * Defines the prefix string used for parsing geometry.
+         */</span>
+        <span class="ActionScriptReserved">private</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">parsingTitle</span>:<span class="ActionScriptDefault_Text">String</span>;
+        
+        
+        <span class="ActionScriptASDoc">/**
+         * Defines the width, height and depth of the cube. Defaults to 200.
+         */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">get</span> <span class="ActionScriptDefault_Text">loaderSize</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">Number</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">_loaderSize</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">set</span> <span class="ActionScriptDefault_Text">loaderSize</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">val</span>:<span class="ActionScriptDefault_Text">Number</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptReserved">void</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">_loaderSize</span> <span class="ActionScriptOperator">==</span> <span class="ActionScriptDefault_Text">val</span><span class="ActionScriptBracket/Brace">)</span>
+                <span class="ActionScriptReserved">return</span>;
+            
+            <span class="ActionScriptDefault_Text">_loaderSize</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">val</span>;
+            
+            <span class="ActionScriptDefault_Text">cube</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">width</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">_loaderSize</span>;
+            <span class="ActionScriptDefault_Text">cube</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">depth</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">_loaderSize</span>;
+            <span class="ActionScriptDefault_Text">cube</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">height</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">_loaderSize</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptASDoc">/**
+         * Creates a new &lt;code&gt;LoaderCube&lt;/code&gt; object.
+         * 
+         * @param    init    [optional]    An initialisation object for specifying default instance properties.
+         */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">LoaderCube</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">init</span>:<span class="ActionScriptDefault_Text">Object</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">null</span><span class="ActionScriptBracket/Brace">)</span> 
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">super</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">init</span><span class="ActionScriptBracket/Brace">)</span>;
+            
+            <span class="ActionScriptDefault_Text">side</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">MovieClip</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">graphics</span>:<span class="ActionScriptDefault_Text">Graphics</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">side</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">graphics</span>;
+            <span class="ActionScriptDefault_Text">graphics</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">lineStyle</span><span class="ActionScriptBracket/Brace">(</span>1<span class="ActionScriptOperator">,</span> 0xFFFFFF<span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptDefault_Text">graphics</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">drawCircle</span><span class="ActionScriptBracket/Brace">(</span>100<span class="ActionScriptOperator">,</span> 100<span class="ActionScriptOperator">,</span> 100<span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptDefault_Text">info</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">TextField</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptDefault_Text">info</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">width</span> <span class="ActionScriptOperator">=</span> 200;
+            <span class="ActionScriptDefault_Text">info</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">height</span> <span class="ActionScriptOperator">=</span> 200;
+            <span class="ActionScriptDefault_Text">tf</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">TextFormat</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptDefault_Text">tf</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">size</span> <span class="ActionScriptOperator">=</span> 24;
+            <span class="ActionScriptDefault_Text">tf</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">color</span> <span class="ActionScriptOperator">=</span> 0x00FFFF;
+            <span class="ActionScriptDefault_Text">tf</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">bold</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">true</span>;
+            <span class="ActionScriptDefault_Text">info</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">wordWrap</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">true</span>;
+            <span class="ActionScriptDefault_Text">side</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">addChild</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">info</span><span class="ActionScriptBracket/Brace">)</span>;
+            
+            <span class="ActionScriptDefault_Text">geometryTitle</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">ini</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">getString</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptString">"geometryTitle"</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptString">"Loading Geometry..."</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptDefault_Text">materialTitle</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">ini</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">getString</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptString">"materialTitle"</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptString">"Loading Material File..."</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptDefault_Text">textureTitle</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">ini</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">getString</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptString">"textureTitle"</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptString">"Loading Texture..."</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptDefault_Text">parsingTitle</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">ini</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">getString</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptString">"parsingTitle"</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptString">"Parsing Geometry..."</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptDefault_Text">_loaderSize</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">ini</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">getNumber</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptString">"loaderSize"</span><span class="ActionScriptOperator">,</span> 200<span class="ActionScriptBracket/Brace">)</span>;
+
+            <span class="ActionScriptDefault_Text">addChild</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">cube</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">Cube</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">{</span><span class="ActionScriptDefault_Text">material</span>:<span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">MovieMaterial</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">side</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptBracket/Brace">{</span><span class="ActionScriptDefault_Text">transparent</span>:<span class="ActionScriptReserved">true</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">smooth</span>:<span class="ActionScriptReserved">true</span><span class="ActionScriptBracket/Brace">}</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">width</span>:<span class="ActionScriptDefault_Text">_loaderSize</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">height</span>:<span class="ActionScriptDefault_Text">_loaderSize</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">depth</span>:<span class="ActionScriptDefault_Text">_loaderSize</span><span class="ActionScriptBracket/Brace">}</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptBracket/Brace">)</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptASDoc">/**
+         * Listener function for an error event.
+         */</span>
+        <span class="ActionScriptReserved">protected</span> <span class="ActionScriptReserved">override</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">notifyError</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptReserved">void</span> 
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">super</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">notifyError</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>;
+            
+            <span class="ActionScriptComment">//write message
+</span>            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">mode</span> <span class="ActionScriptOperator">==</span> <span class="ActionScriptDefault_Text">LOADING_GEOMETRY</span><span class="ActionScriptBracket/Brace">)</span>
+                <span class="ActionScriptDefault_Text">info</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">text</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">geometryTitle</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptString">"\n"</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptDefault_Text">IOErrorText</span>;
+            <span class="ActionScriptReserved">else</span> <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">mode</span> <span class="ActionScriptOperator">==</span> <span class="ActionScriptDefault_Text">PARSING_GEOMETRY</span><span class="ActionScriptBracket/Brace">)</span>
+                <span class="ActionScriptDefault_Text">info</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">text</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">parsingTitle</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptString">"\n"</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptDefault_Text">parser</span>;
+            <span class="ActionScriptReserved">else</span> <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">mode</span> <span class="ActionScriptOperator">==</span> <span class="ActionScriptDefault_Text">LOADING_MATERIAL_FILE</span><span class="ActionScriptBracket/Brace">)</span>
+                <span class="ActionScriptDefault_Text">info</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">text</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">materialTitle</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptString">"\n"</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptDefault_Text">IOErrorText</span>;
+            <span class="ActionScriptReserved">else</span> <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">mode</span> <span class="ActionScriptOperator">==</span> <span class="ActionScriptDefault_Text">LOADING_TEXTURES</span><span class="ActionScriptBracket/Brace">)</span>
+                <span class="ActionScriptDefault_Text">info</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">text</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">textureTitle</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptString">"\n"</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptDefault_Text">IOErrorText</span>;
+            
+            <span class="ActionScriptDefault_Text">info</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">setTextFormat</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">tf</span><span class="ActionScriptBracket/Brace">)</span>;
+            
+            <span class="ActionScriptComment">//draw background
+</span>            <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">graphics</span>:<span class="ActionScriptDefault_Text">Graphics</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">side</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">graphics</span>;
+            <span class="ActionScriptDefault_Text">graphics</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">beginFill</span><span class="ActionScriptBracket/Brace">(</span>0xFF0000<span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptDefault_Text">graphics</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">drawRect</span><span class="ActionScriptBracket/Brace">(</span>0<span class="ActionScriptOperator">,</span> 0<span class="ActionScriptOperator">,</span> 200<span class="ActionScriptOperator">,</span> 200<span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptDefault_Text">graphics</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">endFill</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptASDoc">/**
+         * Listener function for a progress event.
+         */</span>
+        <span class="ActionScriptReserved">protected</span> <span class="ActionScriptReserved">override</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">notifyProgress</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptReserved">void</span> 
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">super</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">notifyProgress</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>;
+            
+            <span class="ActionScriptComment">//write message
+</span>            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">mode</span> <span class="ActionScriptOperator">==</span> <span class="ActionScriptDefault_Text">LOADING_GEOMETRY</span><span class="ActionScriptBracket/Brace">)</span>
+                <span class="ActionScriptDefault_Text">info</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">text</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">geometryTitle</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptString">"\n"</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptDefault_Text">bytesLoaded</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptString">" of "</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptDefault_Text">bytesTotal</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptString">" bytes"</span>;
+            <span class="ActionScriptReserved">else</span> <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">mode</span> <span class="ActionScriptOperator">==</span> <span class="ActionScriptDefault_Text">PARSING_GEOMETRY</span><span class="ActionScriptBracket/Brace">)</span>
+                <span class="ActionScriptDefault_Text">info</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">text</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">parsingTitle</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptString">"\n"</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptDefault_Text">parser</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">parsedChunks</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptString">" of "</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptDefault_Text">parser</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">totalChunks</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptString">" chunks"</span>;
+            <span class="ActionScriptReserved">else</span> <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">mode</span> <span class="ActionScriptOperator">==</span> <span class="ActionScriptDefault_Text">LOADING_MATERIAL_FILE</span><span class="ActionScriptBracket/Brace">)</span>
+                <span class="ActionScriptDefault_Text">info</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">text</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">materialTitle</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptString">"\n"</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptDefault_Text">bytesLoaded</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptString">" of "</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptDefault_Text">bytesTotal</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptString">" bytes"</span>;
+            <span class="ActionScriptReserved">else</span> <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">mode</span> <span class="ActionScriptOperator">==</span> <span class="ActionScriptDefault_Text">LOADING_TEXTURES</span><span class="ActionScriptBracket/Brace">)</span>
+                <span class="ActionScriptDefault_Text">info</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">text</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">textureTitle</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptString">"\n"</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptDefault_Text">bytesLoaded</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptString">" of "</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptDefault_Text">bytesTotal</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptString">" bytes"</span>;
+            
+            <span class="ActionScriptDefault_Text">info</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">setTextFormat</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">tf</span><span class="ActionScriptBracket/Brace">)</span>;
+            
+            <span class="ActionScriptComment">//draw background
+</span>            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">mode</span> <span class="ActionScriptOperator">==</span> <span class="ActionScriptDefault_Text">LOADING_GEOMETRY</span> <span class="ActionScriptOperator">||</span> <span class="ActionScriptDefault_Text">mode</span> <span class="ActionScriptOperator">==</span> <span class="ActionScriptDefault_Text">LOADING_MATERIAL_FILE</span> <span class="ActionScriptOperator">||</span> <span class="ActionScriptDefault_Text">mode</span> <span class="ActionScriptOperator">==</span> <span class="ActionScriptDefault_Text">LOADING_TEXTURES</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptBracket/Brace">{</span>
+                <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">graphics</span>:<span class="ActionScriptDefault_Text">Graphics</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">side</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">graphics</span>;
+                <span class="ActionScriptDefault_Text">graphics</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">lineStyle</span><span class="ActionScriptBracket/Brace">(</span>1<span class="ActionScriptOperator">,</span> 0x808080<span class="ActionScriptBracket/Brace">)</span>;
+                <span class="ActionScriptDefault_Text">graphics</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">drawCircle</span><span class="ActionScriptBracket/Brace">(</span>100<span class="ActionScriptOperator">,</span> 100<span class="ActionScriptOperator">,</span> 100<span class="ActionScriptOperator">*</span><span class="ActionScriptDefault_Text">bytesLoaded</span><span class="ActionScriptOperator">/</span><span class="ActionScriptDefault_Text">bytesTotal</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptBracket/Brace">}</span>
+        <span class="ActionScriptBracket/Brace">}</span>
+    <span class="ActionScriptBracket/Brace">}</span>
+<span class="ActionScriptBracket/Brace">}</span></pre></body>
+</html>
